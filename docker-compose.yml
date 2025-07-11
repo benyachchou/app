@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  # Backend Flask
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - SECRET_KEY=${SECRET_KEY:-your-secret-key-here}
+      - MAX_CONTENT_LENGTH=104857600
+      - CORS_ORIGINS=http://localhost:3000,http://frontend:3000,https://localhost
+    volumes:
+      - ./backend/uploads:/app/uploads
+      - ./backend/models:/app/models
+    networks:
+      - brain-tumor-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend React
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_URL=https://localhost
+    depends_on:
+      - backend
+    networks:
+      - brain-tumor-network
+    restart: unless-stopped
+
+  # Nginx reverse proxy (optionnel pour la production)
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl  # Pour les certificats SSL
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - brain-tumor-network
+    restart: unless-stopped
+
+networks:
+  brain-tumor-network:
+    driver: bridge
+
+volumes:
+  uploads:
+  models:

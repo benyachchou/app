@@ -1,0 +1,20 @@
+# Flask et extensions
+Flask==2.3.3
+Flask-CORS==4.0.0
+
+# Machine Learning - TensorFlow/Keras
+tensorflow==2.13.0
+keras==2.13.1
+numpy==1.24.3
+Pillow==10.0.1
+
+# Utilitaires
+python-dotenv==1.0.0
+gunicorn==21.2.0
+
+# Développement et tests
+pytest==7.4.2
+pytest-flask==1.2.0
+
+# Sécurité
+Werkzeug==2.3.7
