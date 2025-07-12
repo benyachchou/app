@@ -52,9 +52,9 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onUpload, disabled = false })
     }
 
     // Vérifier la taille (max 16MB)
-    const maxSize = 16 * 1024 * 1024; // 16MB
+    const maxSize = 512 * 1024 * 1024; // 512MB
     if (file.size > maxSize) {
-      return 'L\'image est trop volumineuse (max 16MB)';
+      return 'L\'image est trop volumineuse (max 512MB)';
     }
 
     return null;
@@ -149,7 +149,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onUpload, disabled = false })
           </div>
 
           <div className="text-xs text-gray-400">
-            Formats acceptés: JPG, PNG • Taille max: 16MB
+            Formats acceptés: JPG, PNG • Taille max: 512MB
           </div>
         </div>
       </div>

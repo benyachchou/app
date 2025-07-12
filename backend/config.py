@@ -7,7 +7,7 @@ load_dotenv()
 class Config:
     """Configuration de base"""
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-secret-key-change-in-production'
-    MAX_CONTENT_LENGTH = int(os.environ.get('MAX_CONTENT_LENGTH', 100 * 1024 * 1024))  # 100MB
+    MAX_CONTENT_LENGTH = int(os.environ.get('MAX_CONTENT_LENGTH', 512 * 1024 * 1024))  # 512MB
     UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER', 'uploads')
     MODEL_FOLDER = os.environ.get('MODEL_FOLDER', 'models')
     

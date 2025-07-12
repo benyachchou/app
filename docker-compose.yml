@@ -11,7 +11,7 @@ services:
     environment:
       - FLASK_ENV=production
       - SECRET_KEY=${SECRET_KEY:-your-secret-key-here}
-      - MAX_CONTENT_LENGTH=104857600
+      - MAX_CONTENT_LENGTH=536870912
       - CORS_ORIGINS=http://localhost:3000,http://frontend:3000,https://localhost,https://localhost:5173
     volumes:
       - ./backend/uploads:/app/uploads

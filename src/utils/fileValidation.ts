@@ -44,7 +44,7 @@ export const validateModelFile = (file: File): ValidationResult => {
   if (!file.name.toLowerCase().endsWith('.h5')) {
     return {
       isValid: false,
-      error: 'Format de modèle non supporté. Utilisez un fichier .h5'
+      error: 'Format de modèle non supporté. Utilisez un fichier .keras'
     };
   }
 

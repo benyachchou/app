@@ -53,10 +53,10 @@ const ModelUpload: React.FC<ModelUploadProps> = ({ onUpload, disabled = false })
     }
 
     // Vérifier la taille (max 100MB pour les modèles)
-    const maxSize = 100 * 1024 * 1024; // 100MB
+    const maxSize = 512 * 1024 * 1024; // 512MB
     if (file.size > maxSize) {
       setUploadStatus('error');
-      setStatusMessage('Le fichier est trop volumineux (max 100MB)');
+      setStatusMessage('Le fichier est trop volumineux (max 512MB)');
       return;
     }
 
@@ -137,7 +137,7 @@ const ModelUpload: React.FC<ModelUploadProps> = ({ onUpload, disabled = false })
           </div>
 
           <div className="text-xs text-gray-400">
-            Formats acceptés: .keras • Taille max: 100MB
+            Formats acceptés: .keras • Taille max: 512MB
           </div>
         </div>
       </div>

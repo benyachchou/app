@@ -66,8 +66,8 @@ export interface AppState {
 // Constantes
 export const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png'] as const;
 export const ALLOWED_MODEL_TYPES = ['application/octet-stream'] as const; // .h5 files
-export const MAX_IMAGE_SIZE = 16 * 1024 * 1024; // 16MB
-export const MAX_MODEL_SIZE = 100 * 1024 * 1024; // 100MB
+export const MAX_IMAGE_SIZE = 512 * 1024 * 1024; // 512MB
+export const MAX_MODEL_SIZE = 512 * 1024 * 1024; // 512MB
 
 export type AllowedImageType = typeof ALLOWED_IMAGE_TYPES[number];
 export type AllowedModelType = typeof ALLOWED_MODEL_TYPES[number];
