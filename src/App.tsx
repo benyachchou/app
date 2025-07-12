@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Brain, Upload, FileText, Activity, AlertCircle, CheckCircle, Loader2, Cpu } from 'lucide-react';
+import { Brain, Activity, AlertCircle, Loader2 } from 'lucide-react';
+import TabNavigation from './components/TabNavigation';
 import ModelUpload from './components/ModelUpload';
 import ImageUpload from './components/ImageUpload';
 import PredictionResult from './components/PredictionResult';
@@ -8,6 +9,7 @@ import { ApiService } from './services/api';
 import { PredictionResult as PredictionResultType } from './types';
 
 function App() {
+  const [activeTab, setActiveTab] = useState<'model' | 'analysis'>('model');
   const [modelLoaded, setModelLoaded] = useState(false);
   const [modelInfo, setModelInfo] = useState<any>(null);
   const [predictionResult, setPredictionResult] = useState<PredictionResultType | null>(null);
@@ -37,6 +39,8 @@ function App() {
       const result = await ApiService.uploadModel(file);
       setModelLoaded(true);
       await checkModelStatus();
+      // Passer automatiquement à l'onglet d'analyse après le chargement du modèle
+      setActiveTab('analysis');
       return result;
     } catch (err: any) {
       setError(err.message || 'Erreur lors du chargement du modèle');
@@ -113,55 +117,92 @@ function App() {
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Colonne gauche - Upload et statut */}
-          <div className="lg:col-span-1 space-y-6">
-            {/* Statut du modèle */}
+          {/* Colonne gauche - Statut du modèle */}
+          <div className="lg:col-span-1">
             <ModelStatus 
               modelLoaded={modelLoaded} 
               modelInfo={modelInfo}
               onRefresh={checkModelStatus}
             />
-
-            {/* Upload du modèle */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center space-x-2 mb-4">
-                <Cpu className="w-5 h-5 text-purple-600" />
-                <h2 className="text-lg font-semibold text-gray-900">
-                  Charger Modèle .keras
-                </h2>
-              </div>
-              <ModelUpload 
-                onUpload={handleModelUpload}
-                disabled={isLoading}
-              />
-            </div>
-
-            {/* Upload d'image */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center space-x-2 mb-4">
-                <Upload className="w-5 h-5 text-green-600" />
-                <h2 className="text-lg font-semibold text-gray-900">
-                  Analyser une Image IRM
-                </h2>
-                <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
-                  VGG16 Ready
-                </span>
-              </div>
-              <ImageUpload 
-                onUpload={handleImageUpload}
-                disabled={!modelLoaded || isLoading}
-              />
-              {!modelLoaded && (
-                <p className="text-sm text-amber-600 mt-2 flex items-center space-x-1">
-                  <AlertCircle className="w-4 h-4" />
-                  <span>Veuillez d'abord charger un modèle .keras</span>
-                </p>
-              )}
-            </div>
           </div>
 
-          {/* Colonne droite - Résultats */}
+          {/* Colonne centrale - Onglets */}
           <div className="lg:col-span-2">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+              <TabNavigation 
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+                modelLoaded={modelLoaded}
+              />
+              
+              <div className="p-6">
+                {activeTab === 'model' && (
+                  <div>
+                    <div className="mb-4">
+                      <h2 className="text-lg font-semibold text-gray-900 mb-2">
+                        Charger votre modèle .keras
+                      </h2>
+                      <p className="text-sm text-gray-600">
+                        Uploadez un modèle TensorFlow/Keras entraîné pour la détection de tumeurs cérébrales
+                      </p>
+                    </div>
+                    <ModelUpload 
+                      onUpload={handleModelUpload}
+                      disabled={isLoading}
+                    />
+                  </div>
+                )}
+                
+                {activeTab === 'analysis' && (
+                  <div>
+                    <div className="mb-4">
+                      <h2 className="text-lg font-semibold text-gray-900 mb-2 flex items-center space-x-2">
+                        <span>Analyser une Image IRM</span>
+                        {modelLoaded && (
+                          <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+                            Modèle Prêt
+                          </span>
+                        )}
+                      </h2>
+                      <p className="text-sm text-gray-600">
+                        Uploadez une image IRM pour obtenir une prédiction de détection de tumeur
+                      </p>
+                    </div>
+                    
+                    {!modelLoaded ? (
+                      <div className="text-center py-12">
+                        <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <AlertCircle className="w-8 h-8 text-amber-600" />
+                        </div>
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">
+                          Modèle requis
+                        </h3>
+                        <p className="text-gray-600 mb-4">
+                          Veuillez d'abord charger un modèle .keras dans l'onglet "Charger Modèle"
+                        </p>
+                        <button
+                          onClick={() => setActiveTab('model')}
+                          className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                        >
+                          Aller au chargement de modèle
+                        </button>
+                      </div>
+                    ) : (
+                      <ImageUpload 
+                        onUpload={handleImageUpload}
+                        disabled={isLoading}
+                      />
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Section des résultats */}
+        {predictionResult && (
+          <div className="mt-8">
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <div className="flex items-center space-x-2 mb-6">
                 <Activity className="w-5 h-5 text-purple-600" />
@@ -170,24 +211,10 @@ function App() {
                 </h2>
               </div>
 
-              {predictionResult ? (
-                <PredictionResult result={predictionResult} />
-              ) : (
-                <div className="text-center py-12">
-                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Activity className="w-8 h-8 text-gray-400" />
-                  </div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">
-                    Aucune analyse effectuée
-                  </h3>
-                  <p className="text-gray-600 max-w-sm mx-auto">
-                    Uploadez votre modèle .keras (ex: brain_tumor_vgg16.keras) entraîné pour la détection.
-                  </p>
-                </div>
-              )}
+              <PredictionResult result={predictionResult} />
             </div>
           </div>
-        </div>
+        )}
 
         {/* Section d'informations */}
         <div className="mt-12 bg-blue-50 rounded-xl p-6 border border-blue-100">
@@ -202,7 +229,7 @@ function App() {
               <div>
                 <h4 className="font-medium text-blue-900">Charger le modèle</h4>
                 <p className="text-sm text-blue-700 mt-1">
-                  Uploadez votre modèle .h5 entraîné pour la détection de tumeurs cérébrales.
+                  Uploadez votre modèle .keras entraîné pour la détection de tumeurs cérébrales.
                 </p>
               </div>
             </div>
