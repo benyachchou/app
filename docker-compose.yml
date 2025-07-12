@@ -33,7 +33,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - VITE_API_URL=http://nginx
+      - VITE_API_URL=http://192.168.15.9:5000
     depends_on:
       - backend
     networks:

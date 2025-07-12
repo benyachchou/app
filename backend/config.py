@@ -12,7 +12,7 @@ class Config:
     MODEL_FOLDER = os.environ.get('MODEL_FOLDER', 'models')
     
     # Configuration CORS
-    CORS_ORIGINS = os.environ.get('CORS_ORIGINS', 'http://localhost:5173').split(',')
+    CORS_ORIGINS = os.environ.get('CORS_ORIGINS', 'http://192.168.15.9:5173,http://localhost:5173').split(',')
     
     # Configuration des logs
     LOG_LEVEL = os.environ.get('LOG_LEVEL', 'INFO')
