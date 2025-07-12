@@ -1,5 +1,5 @@
 // Configuration de l'API
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://localhost';
 
 // Types pour les réponses API
 export interface ApiResponse<T = any> {
