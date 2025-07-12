@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Brain, Activity, AlertCircle, Loader2 } from 'lucide-react';
+import { Brain, Activity, AlertCircle, Loader2, CheckCircle } from 'lucide-react';
 import TabNavigation from './components/TabNavigation';
 import ModelUpload from './components/ModelUpload';
 import ImageUpload from './components/ImageUpload';
